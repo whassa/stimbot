@@ -1,30 +1,32 @@
+# Description:
+#   Tools for interacting with the doomtownDb
+#   Author whassa
+# Commands:
+# 
+#   {{dt|card name}} or {{card name|dt}} - fetch the card image for a Doomtown card
+
+
 Fuse = require 'fuse.js'
 
 preloadData = (robot) ->
-    locales = [ "en" ]
+    locales = ["en"]
     for locale in locales
         do (locale) ->
-            robot.http("https://dtdb.co/api/cards?_locale=" + locale)
+            robot.http("https://dtdb.co/api/cards/")
                 .get() (err, res, body) ->
                     cardData = JSON.parse body
-                    robot.logger.info "Loaded " + cardData.records.length + " DTDB cards"
-                    robot.brain.set 'dtcards-' + locale, cardData.records.sort(compareCards)
+                    robot.logger.info "Loaded " + cardData.length + " DTDB cards"
+                    robot.brain.set 'DTDBcards-'+locale, cardData
 
-            robot.http("https://api.fiveringsdb.com/sets?_locale=" + locale)
+            robot.http("https://dtdb.co/api/sets/")
                 .get() (err, res, body) ->
                     packData = JSON.parse body
-                    mappedPackData = {}
-                    for pack in packData.records
-                        mappedPackData[pack.id] = pack
-                    robot.logger.info "Loaded " + packData.records.length + " DTDB saddlebag"
-                    robot.brain.set 'l5rpacks-' + locale, mappedPackData
+                    robot.logger.info "Loaded " + packData.length + " DTDB saddlebag"
+                    robot.brain.set 'DTDBpacks-' + locale, packData
 
-# Look up cards functions      
+      
 lookupCard = (query, cards, locale) ->
     query = query.toLowerCase()
-
-    if query of ABBREVIATIONS[locale]
-        query = ABBREVIATIONS[locale][query]
 
     if locale in ["kr"]
         # fuzzy search won't work, do naive string-matching
@@ -39,9 +41,8 @@ lookupCard = (query, cards, locale) ->
             return sortedResults[0]
         return false
     else
+        
         keys = ['title']
-        if locale != 'en'
-            keys.push('_locale["' + locale + '"].title')
 
         fuseOptions =
             caseSensitive: false
@@ -83,27 +84,29 @@ module.exports = (robot) ->
     setTimeout ( ->
         preloadData(robot)
     ), 1000
-	
-	# Give the doomtown image to stuff
-	robot.hear /{{dt\|([^}]+)}}|{{([^}]+\|dt)}}/, (res) ->
-		# get the query
+    
+    # Give the doomtown image to stuff
+    robot.hear /{{dt\|([^}]+)}}|{{([^}]+\|dt)}}/, (res) ->
+        # get the query
         match = ''
+        ## check the match to take of the result
         if res.match[1]
             match = res.match[1]
         else if res.match[2]
             match = res.match[2]
+        # remove unnecessary space
         query = match.replace /^\s+|\s+$/g, ""
-	
-		# Regex 
+    
+        # Regex 
         locale = "en"
         hangul = new RegExp("[\u1100-\u11FF|\u3130-\u318F|\uA960-\uA97F|\uAC00-\uD7AF|\uD7B0-\uD7FF]");
        
-		# Get the dtdb card
-        card = lookupCard(query, robot.brain.get('dtdbcards-' + locale), locale)
+        # Get the dtdb card
+        card = lookupCard(query, robot.brain.get('DTcards-'+locale), locale)
         robot.logger.info "Searching DTDB for card image #{query} (from #{res.message.user.name} in #{res.message.room})"
         robot.logger.info "Locale: " + locale
 
         if card
-            res.send card.pack_cards[0].image_url
+            res.send "https://dtdb.co/"+card.imagesrc
         else
-            res.send "No DT card result found for \"" + match + "\"."
+            res.send "No DoomtownDB card result found for \"" + match + "\"."
