@@ -60,7 +60,7 @@ lookupCard = (query, cards, locale) ->
         if results? and results.length > 0
             filteredResults = results.filter((c) -> c.score == results[0].score)
             sortedResults = []
-            if locale is 'en'
+            if locale is "en"
                 sortedResults = filteredResults.sort((c1, c2) -> c1.item.title.length - c2.item.title.length)
             else
                 # favor localized results over non-localized results when showing matches
@@ -102,7 +102,7 @@ module.exports = (robot) ->
         hangul = new RegExp("[\u1100-\u11FF|\u3130-\u318F|\uA960-\uA97F|\uAC00-\uD7AF|\uD7B0-\uD7FF]");
        
         # Get the dtdb card
-        card = lookupCard(query, robot.brain.get('DTcards-'+locale), locale)
+        card = lookupCard(query, robot.brain.get('DTDBcards-'+locale), locale)
         robot.logger.info "Searching DTDB for card image #{query} (from #{res.message.user.name} in #{res.message.room})"
         robot.logger.info "Locale: " + locale
 
