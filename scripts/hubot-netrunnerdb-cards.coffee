@@ -42,18 +42,18 @@ LOCALIZATION = {
 }
 
 # FACTIONS = {
-# 	'adam': { "name": 'Adam', "color": '#b9b23a', "icon": "Adam" },
-# 	'anarch': { "name": 'Anarch', "color": '#ff4500', "icon": "Anarch" },
-# 	'apex': { "name": 'Apex', "color": '#9e564e', "icon": "Apex" },
-# 	'criminal': { "name": 'Criminal', "color": '#4169e1', "icon": "Criminal" },
-# 	'shaper': { "name": 'Shaper', "color": '#32cd32', "icon": "Shaper" },
-# 	'sunny-lebeau': { "name": 'Sunny Lebeau', "color": '#715778', "icon": "Sunny LeBeau" },
-# 	'neutral': { "name": 'Neutral (runner)', "color": '#808080', "icon": "Neutral" },
-# 	'haas-bioroid': { "name": 'Haas-Bioroid', "color": '#8a2be2', "icon": "Haas-Bioroid" },
-# 	'jinteki': { "name": 'Jinteki', "color": '#dc143c', "icon": "Jinteki" },
-# 	'nbn': { "name": 'NBN', "color": '#ff8c00', "icon": "NBN" },
-# 	'weyland-consortium': { "name": 'Weyland Consortium', "color": '#326b5b', "icon": "Weyland" },
-# 	'neutral': { "name": 'Neutral (corp)', "color": '#808080', "icon": "Neutral" }
+#   'adam': { "name": 'Adam', "color": '#b9b23a', "icon": "Adam" },
+#   'anarch': { "name": 'Anarch', "color": '#ff4500', "icon": "Anarch" },
+#   'apex': { "name": 'Apex', "color": '#9e564e', "icon": "Apex" },
+#   'criminal': { "name": 'Criminal', "color": '#4169e1', "icon": "Criminal" },
+#   'shaper': { "name": 'Shaper', "color": '#32cd32', "icon": "Shaper" },
+#   'sunny-lebeau': { "name": 'Sunny Lebeau', "color": '#715778', "icon": "Sunny LeBeau" },
+#   'neutral': { "name": 'Neutral (runner)', "color": '#808080', "icon": "Neutral" },
+#   'haas-bioroid': { "name": 'Haas-Bioroid', "color": '#8a2be2', "icon": "Haas-Bioroid" },
+#   'jinteki': { "name": 'Jinteki', "color": '#dc143c', "icon": "Jinteki" },
+#   'nbn': { "name": 'NBN', "color": '#ff8c00', "icon": "NBN" },
+#   'weyland-consortium': { "name": 'Weyland Consortium', "color": '#326b5b', "icon": "Weyland" },
+#   'neutral': { "name": 'Neutral (corp)', "color": '#808080', "icon": "Neutral" }
 # }
 
 ABBREVIATIONS = {
@@ -612,7 +612,7 @@ cardMatches = (card, cond, packs, cycles) ->
                 when "v" then return card.agenda_points < parseInt(cond.value)
                 when "c" then return cycles[packs[card.pack_code].cycle_code].position < parseInt(cond.value)
         when ">" then return !cardMatches(card, { key: cond.key, op: "<", value: parseInt(cond.value) + 1 }, packs, cycles)
-        when "!" then	return !cardMatches(card, { key: cond.key, op: ":", value: cond.value }, packs, cycles)
+        when "!" then   return !cardMatches(card, { key: cond.key, op: ":", value: cond.value }, packs, cycles)
     true
 
 lookupCard = (query, cards, locale) ->
@@ -728,7 +728,7 @@ module.exports = (robot) ->
         else
             res.send "No Netrunner card result found for \"" + res.match[1] + "\"."
 
-    robot.hear /^!jank\s?(runner|corp)?$/i, (res) ->
+    robot.hear /^\w*\s*!jank\s?(runner|corp)?$/i, (res) ->
         side = res.match[1]
         cards = robot.brain.get('cards-en')
         packs = robot.brain.get('packs-en')
