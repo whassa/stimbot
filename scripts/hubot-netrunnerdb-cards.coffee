@@ -812,7 +812,8 @@ module.exports = (robot) ->
  
     # delay preload to give the app time to connect to redis
     
-    # Show the card of the day
+    # Show the card of the day if the script is running every day
+    # you better use the setInterval
     setTimeout ( ->
         
         cards = robot.brain.get('cards-en')
@@ -825,11 +826,11 @@ module.exports = (robot) ->
         
         card = lookupCard(cards[cardNumber].title, robot.brain.get('cards-' + locale), locale)
         
+        cardImage = card.image_url
         
+        robot.messageRoom "#general", "Card of the day : #{cardImage}"
         
-        robot.messageRoom "#general", card.image_url
-        
-    ), 6000
+    ), 1 * 1000 #* 60 * 60
 
    
     
