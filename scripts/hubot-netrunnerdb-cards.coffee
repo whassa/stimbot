@@ -809,3 +809,28 @@ module.exports = (robot) ->
             res.send("Couldn't find anything :|")
         else
             res.send("Found #{results.join(", ")}")
+ 
+    # delay preload to give the app time to connect to redis
+    
+    # Show the card of the day
+    setTimeout ( ->
+        
+        cards = robot.brain.get('cards-en')
+        
+        cardlength = Object.keys(cards).length
+        
+        cardNumber = Math.floor((Math.random() * cardlength))
+        
+        locale = 'en'
+        
+        card = lookupCard(cards[cardNumber].title, robot.brain.get('cards-' + locale), locale)
+        
+        
+        
+        robot.messageRoom general, card.image_url
+        
+    ), 6000
+
+   
+    
+
