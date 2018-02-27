@@ -827,7 +827,7 @@ module.exports = (robot) ->
         
         
         
-        robot.messageRoom general, card.image_url
+        robot.messageRoom "#general", card.image_url
         
     ), 6000
 
