@@ -828,9 +828,9 @@ module.exports = (robot) ->
         
         cardImage = card.image_url
         
-        robot.messageRoom "#general", "Card of the day : #{cardImage}"
+        robot.messageRoom "#general", cardImage
         
-    ), 1 * 1000 #* 60 * 60
+    ), 1 * 1000 * 60 * 60
 
    
     
