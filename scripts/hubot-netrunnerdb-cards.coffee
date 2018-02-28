@@ -813,7 +813,7 @@ module.exports = (robot) ->
     # delay preload to give the app time to connect to redis
     
     # Show the card of the day if the script is running every day
-    # you better use the setInterval
+    # you better use the setInterval and give the time interval you want
     setTimeout ( ->
         
         cards = robot.brain.get('cards-en')
@@ -830,7 +830,7 @@ module.exports = (robot) ->
         
         robot.messageRoom "#general", "Card of the day : #{cardImage}"
         
-    ), 6 * 1000 * 60 * 60
+    ), 1 * 1000 * 60 * 60
 
    
     
