@@ -817,20 +817,27 @@ module.exports = (robot) ->
     setTimeout ( ->
         
         cards = robot.brain.get('cards-en')
-        
+      
         cardlength = Object.keys(cards).length
         
-        cardNumber = Math.floor((Math.random() * cardlength))
-        
         locale = 'en'
+       
+        fetchImage = -> ( 
+            cardNumber = Math.floor((Math.random() * cardlength))
+            card = lookupCard(cards[cardNumber].title, robot.brain.get('cards-' + locale), locale)
+            cardImage = card.image_url
+            cardImage        
+        )
         
-        card = lookupCard(cards[cardNumber].title, robot.brain.get('cards-' + locale), locale)
         
-        cardImage = card.image_url
+        cardImage = fetchImage() while  cardImage == undefined
+        
         
         robot.messageRoom "#general", "Card of the day : #{cardImage}"
         
     ), 1 * 1000 * 60 * 60
+    
+    
 
    
     
