@@ -56,6 +56,7 @@ LOCALIZATION = {
 #   'neutral': { "name": 'Neutral (corp)', "color": '#808080', "icon": "Neutral" }
 # }
 
+
 ABBREVIATIONS = {
     'en': {
         'proco': 'Professional Contacts',
@@ -817,27 +818,37 @@ module.exports = (robot) ->
     setTimeout ( ->
         
         cards = robot.brain.get('cards-en')
-      
+        packs = robot.brain.get('packs-en')
+        cycles = robot.brain.get('cycles-en')
+        mwl = robot.brain.get('mwl-en')
         cardlength = Object.keys(cards).length
-        
         locale = 'en'
        
         fetchImage = -> ( 
-            cardNumber = Math.floor((Math.random() * cardlength))
-            card = lookupCard(cards[cardNumber].title, robot.brain.get('cards-' + locale), locale)
-            cardImage = card.image_url
-            cardImage        
+
+            rotated = true
+            
+            while rotated
+                cardNumber = Math.floor((Math.random() * cardlength))
+                card = lookupCard(cards[cardNumber].title, robot.brain.get('cards-' + locale), locale)
+                cardImage = card.image_url
+                pack = packs[card["pack_code"]]
+                cycle = cycles[pack["cycle_code"]]
+                rotated = cycle["rotated"];
+                if typeof mwl["cards"][card["code"]] != "undefined"
+                    if  typeof mwl["cards"][card["code"]]["deck_limit"] != "undefined"
+                        rotated = true
+            cardImage
         )
-        
-        
+
         cardImage = fetchImage() while  cardImage == undefined
-        
-        
+
         robot.messageRoom "#general", "Card of the day : #{cardImage}"
-        
-    ), 1 * 1000 * 60 * 60
+
+    ), 1 * 1000 * 60 * 60 
     
-    
+
+
 
    
     
